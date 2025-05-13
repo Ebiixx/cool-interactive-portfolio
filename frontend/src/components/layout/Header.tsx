@@ -1,20 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css';
 
-const Header = () => {
-    return (
-        <header className="header">
-            <div className="logo">Cool Portfolio</div>
-            <nav className="nav">
-                <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/projects">Projects</Link></li>
-                    <li><Link to="/ai-playground">AI Playground</Link></li>
-                </ul>
-            </nav>
-        </header>
-    );
+export const Header: React.FC = () => {
+  return (
+    <header className="portfolio-header">
+      <div className="container">
+        <h1>Frontend Showcase</h1>
+        <nav>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">Über Mich</a></li>
+            <li><a href="#projects">Projekte</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Kontakt</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+  );
 };
-
-export default Header;

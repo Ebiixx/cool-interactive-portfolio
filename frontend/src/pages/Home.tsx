@@ -1,33 +1,21 @@
 import React from 'react';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
-import DragDrop from '../components/features/DragDrop';
-import AnimatedCards from '../components/features/AnimatedCards';
-import AIChat from '../components/features/AIChat';
 import './Home.css';
 
-const Home: React.FC = () => {
-    return (
-        <div className="home">
-            <Header />
-            <main>
-                <h1>Welcome to My Interactive Portfolio</h1>
-                <section>
-                    <h2>Drag and Drop Feature</h2>
-                    <DragDrop />
-                </section>
-                <section>
-                    <h2>Animated Cards</h2>
-                    <AnimatedCards />
-                </section>
-                <section>
-                    <h2>AI Chat Integration</h2>
-                    <AIChat />
-                </section>
-            </main>
-            <Footer />
+export const Home: React.FC = () => {
+  return (
+    <div className="home-page">
+      <div className="container">
+        <div className="hero">
+          <h1>Willkommen zu meinem interaktiven Portfolio</h1>
+          <p className="hero-subtitle">
+            Frontend-Entwicklung mit modernen Technologien und kreativen Animationen
+          </p>
+          <div className="cta-buttons">
+            <a href="#projects" className="btn btn-primary">Projekte ansehen</a>
+            <a href="#contact" className="btn btn-outline">Kontakt aufnehmen</a>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
-
-export default Home;

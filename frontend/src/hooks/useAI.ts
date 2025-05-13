@@ -1,31 +1,22 @@
-import { useState, useEffect } from 'react';
-import { fetchAIResponse } from '../services/api';
+import { useState } from 'react';
 
-const useAI = (prompt) => {
-    const [response, setResponse] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+export const useAI = () => {
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState('');
 
-    useEffect(() => {
-        if (!prompt) return;
+  const askAI = async (prompt: string) => {
+    setLoading(true);
+    try {
+      // Mock-Implementierung - in einer realen App würdest du hier eine API-Anfrage machen
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setResponse(`AI response to: ${prompt}`);
+    } catch (error) {
+      console.error('Error in AI chat:', error);
+      setResponse('Sorry, an error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const getAIResponse = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const data = await fetchAIResponse(prompt);
-                setResponse(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        getAIResponse();
-    }, [prompt]);
-
-    return { response, loading, error };
+  return { loading, response, askAI };
 };
-
-export default useAI;

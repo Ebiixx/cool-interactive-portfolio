@@ -1,49 +1,28 @@
 import React, { useState } from 'react';
 
-const DragDrop = () => {
-    const [items, setItems] = useState<string[]>(['Item 1', 'Item 2', 'Item 3']);
+interface DragDropItem {
+  id: string;
+  content: string;
+}
 
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-        e.dataTransfer.setData('text/plain', index.toString());
-    };
+export const DragDrop: React.FC = () => {
+  const [items, setItems] = useState<DragDropItem[]>([
+    { id: '1', content: 'Item 1' },
+    { id: '2', content: 'Item 2' },
+    { id: '3', content: 'Item 3' },
+  ]);
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-        const draggedIndex = Number(e.dataTransfer.getData('text/plain'));
-        const updatedItems = [...items];
-        const [draggedItem] = updatedItems.splice(draggedIndex, 1);
-        updatedItems.splice(index, 0, draggedItem);
-        setItems(updatedItems);
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
-
-    return (
-        <div>
-            <h2>Drag and Drop Example</h2>
-            <div>
-                {items.map((item, index) => (
-                    <div
-                        key={index}
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, index)}
-                        onDrop={(e) => handleDrop(e, index)}
-                        onDragOver={handleDragOver}
-                        style={{
-                            padding: '16px',
-                            margin: '8px',
-                            border: '1px solid #ccc',
-                            backgroundColor: '#f9f9f9',
-                            cursor: 'move'
-                        }}
-                    >
-                        {item}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+  // Einfache Implementierung - in einer realen App würdest du react-beautiful-dnd verwenden
+  return (
+    <div className="drag-drop-container">
+      <h3>Drag & Drop Demo</h3>
+      <div className="drag-drop-items">
+        {items.map(item => (
+          <div key={item.id} className="drag-item">
+            {item.content}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
-
-export default DragDrop;
