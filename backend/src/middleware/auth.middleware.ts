@@ -1,21 +1,36 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../utils/auth.utils';
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers['authorization']?.split(' ')[1];
+export interface AuthRequest extends Request {
+  userId?: number;
+  isAdmin?: boolean;
+}
 
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
+export const isAuthenticated = (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized: No token provided' });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ message: 'Failed to authenticate token' });
-        }
+    const token = authHeader.split(' ')[1];
+    const decoded = verifyToken(token);
 
-        req.user = decoded;
-        next();
-    });
+    if (!decoded) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    }
+
+    req.userId = decoded.userId;
+    req.isAdmin = decoded.isAdmin;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Unauthorized: Token verification failed' });
+  }
 };
 
-export default authMiddleware;
+export const isAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (req.isAdmin !== true) {
+    return res.status(403).json({ error: 'Forbidden: Admin privileges required' });
+  }
+  next();
+};

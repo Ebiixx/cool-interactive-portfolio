@@ -1,38 +1,50 @@
 import axios from 'axios';
 
-const apiClient = axios.create({
-    baseURL: 'http://localhost:5000/api', // Adjust the base URL as needed
-    headers: {
-        'Content-Type': 'application/json',
-    },
+const API_URL = 'http://localhost:5000/api';
+
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-export const fetchProjects = async () => {
-    try {
-        const response = await apiClient.get('/projects');
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching projects:', error);
-        throw error;
-    }
-};
+export interface Project {
+  id?: number;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  demoUrl?: string;
+  githubUrl?: string;
+  tags: string[];
+  featured?: boolean;
+  order?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
-export const createProject = async (projectData) => {
-    try {
-        const response = await apiClient.post('/projects', projectData);
-        return response.data;
-    } catch (error) {
-        console.error('Error creating project:', error);
-        throw error;
-    }
-};
-
-export const fetchAIResponse = async (prompt) => {
-    try {
-        const response = await apiClient.post('/ai/chat', { prompt });
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching AI response:', error);
-        throw error;
-    }
+export const projectsApi = {
+  getAll: async (): Promise<Project[]> => {
+    const response = await api.get('/projects');
+    return response.data;
+  },
+  
+  getById: async (id: number): Promise<Project> => {
+    const response = await api.get(`/projects/${id}`);
+    return response.data;
+  },
+  
+  create: async (project: Project): Promise<Project> => {
+    const response = await api.post('/projects', project);
+    return response.data;
+  },
+  
+  update: async (id: number, project: Project): Promise<Project> => {
+    const response = await api.put(`/projects/${id}`, project);
+    return response.data;
+  },
+  
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/projects/${id}`);
+  }
 };

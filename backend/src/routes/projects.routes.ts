@@ -1,18 +1,15 @@
-import { Router } from 'express';
-import { getProjects, createProject, updateProject, deleteProject } from '../controllers/projects.controller';
+import express from 'express';
+import { ProjectsController } from '../controllers/projects.controller';
 
-const router = Router();
+const router = express.Router();
 
-// Route to get all projects
-router.get('/', getProjects);
+// Öffentliche Routen - kein Auth erforderlich
+router.get('/', ProjectsController.getAllProjects);
+router.get('/:id', ProjectsController.getProjectById);
 
-// Route to create a new project
-router.post('/', createProject);
-
-// Route to update an existing project
-router.put('/:id', updateProject);
-
-// Route to delete a project
-router.delete('/:id', deleteProject);
+// Admin-Routen - würden normalerweise Auth erfordern
+router.post('/', ProjectsController.createProject);
+router.put('/:id', ProjectsController.updateProject);
+router.delete('/:id', ProjectsController.deleteProject);
 
 export default router;

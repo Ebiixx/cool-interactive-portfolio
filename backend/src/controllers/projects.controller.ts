@@ -1,62 +1,168 @@
 import { Request, Response } from 'express';
-import Project from '../models/project.model';
+import { prisma } from '../services/prisma.service';
+import { ProjectDTO } from '../models/project.model';
 
-// Get all projects
-export const getAllProjects = async (req: Request, res: Response) => {
+export class ProjectsController {
+  // Alle Projekte abrufen
+  static async getAllProjects(req: Request, res: Response) {
     try {
-        const projects = await Project.find();
-        res.status(200).json(projects);
+      const projects = await prisma.project.findMany({
+        orderBy: [
+          { featured: 'desc' },
+          { order: 'asc' },
+          { createdAt: 'desc' }
+        ]
+      });
+
+      // Konvertiere Tags-String zurück in Array
+      const formattedProjects = projects.map(project => ({
+        ...project,
+        tags: project.tags.split(',').filter(tag => tag.trim() !== '')
+      }));
+
+      return res.status(200).json(formattedProjects);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching projects', error });
+      console.error('Error fetching projects:', error);
+      return res.status(500).json({ error: 'Failed to fetch projects' });
     }
-};
+  }
 
-// Create a new project
-export const createProject = async (req: Request, res: Response) => {
-    const newProject = new Project(req.body);
+  // Ein Projekt nach ID abrufen
+  static async getProjectById(req: Request, res: Response) {
     try {
-        const savedProject = await newProject.save();
-        res.status(201).json(savedProject);
+      const { id } = req.params;
+      
+      const project = await prisma.project.findUnique({
+        where: { id: parseInt(id) }
+      });
+
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Konvertiere Tags-String zurück in Array
+      const formattedProject = {
+        ...project,
+        tags: project.tags.split(',').filter(tag => tag.trim() !== '')
+      };
+
+      return res.status(200).json(formattedProject);
     } catch (error) {
-        res.status(400).json({ message: 'Error creating project', error });
+      console.error('Error fetching project:', error);
+      return res.status(500).json({ error: 'Failed to fetch project' });
     }
-};
+  }
 
-// Get a project by ID
-export const getProjectById = async (req: Request, res: Response) => {
+  // Neues Projekt erstellen
+  static async createProject(req: Request, res: Response) {
     try {
-        const project = await Project.findById(req.params.id);
-        if (!project) {
-            return res.status(404).json({ message: 'Project not found' });
+      const projectData: ProjectDTO = req.body;
+      
+      // Überprüfe erforderliche Felder
+      if (!projectData.title || !projectData.description) {
+        return res.status(400).json({ error: 'Title and description are required' });
+      }
+
+      // Konvertiere Tags-Array in String
+      const tagsString = Array.isArray(projectData.tags) 
+        ? projectData.tags.join(',') 
+        : '';
+
+      const newProject = await prisma.project.create({
+        data: {
+          title: projectData.title,
+          description: projectData.description,
+          imageUrl: projectData.imageUrl || null,
+          demoUrl: projectData.demoUrl || null,
+          githubUrl: projectData.githubUrl || null,
+          tags: tagsString,
+          featured: projectData.featured || false,
+          order: projectData.order || 0
         }
-        res.status(200).json(project);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching project', error });
-    }
-};
+      });
 
-// Update a project by ID
-export const updateProject = async (req: Request, res: Response) => {
-    try {
-        const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedProject) {
-            return res.status(404).json({ message: 'Project not found' });
-        }
-        res.status(200).json(updatedProject);
-    } catch (error) {
-        res.status(400).json({ message: 'Error updating project', error });
-    }
-};
+      // Konvertiere Tags-String zurück in Array für die Antwort
+      const formattedProject = {
+        ...newProject,
+        tags: newProject.tags.split(',').filter(tag => tag.trim() !== '')
+      };
 
-// Delete a project by ID
-export const deleteProject = async (req: Request, res: Response) => {
-    try {
-        const deletedProject = await Project.findByIdAndDelete(req.params.id);
-        if (!deletedProject) {
-            return res.status(404).json({ message: 'Project not found' });
-        }
-        res.status(200).json({ message: 'Project deleted successfully' });
+      return res.status(201).json(formattedProject);
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting project', error });
+      console.error('Error creating project:', error);
+      return res.status(500).json({ error: 'Failed to create project' });
     }
-};
+  }
+
+  // Projekt aktualisieren
+  static async updateProject(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const projectData: ProjectDTO = req.body;
+
+      // Prüfe, ob das Projekt existiert
+      const existingProject = await prisma.project.findUnique({
+        where: { id: parseInt(id) }
+      });
+
+      if (!existingProject) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Konvertiere Tags-Array in String
+      const tagsString = Array.isArray(projectData.tags) 
+        ? projectData.tags.join(',') 
+        : existingProject.tags;
+
+      const updatedProject = await prisma.project.update({
+        where: { id: parseInt(id) },
+        data: {
+          title: projectData.title || existingProject.title,
+          description: projectData.description || existingProject.description,
+          imageUrl: projectData.imageUrl !== undefined ? projectData.imageUrl : existingProject.imageUrl,
+          demoUrl: projectData.demoUrl !== undefined ? projectData.demoUrl : existingProject.demoUrl,
+          githubUrl: projectData.githubUrl !== undefined ? projectData.githubUrl : existingProject.githubUrl,
+          tags: tagsString,
+          featured: projectData.featured !== undefined ? projectData.featured : existingProject.featured,
+          order: projectData.order !== undefined ? projectData.order : existingProject.order
+        }
+      });
+
+      // Konvertiere Tags-String zurück in Array für die Antwort
+      const formattedProject = {
+        ...updatedProject,
+        tags: updatedProject.tags.split(',').filter(tag => tag.trim() !== '')
+      };
+
+      return res.status(200).json(formattedProject);
+    } catch (error) {
+      console.error('Error updating project:', error);
+      return res.status(500).json({ error: 'Failed to update project' });
+    }
+  }
+
+  // Projekt löschen
+  static async deleteProject(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      // Prüfe, ob das Projekt existiert
+      const existingProject = await prisma.project.findUnique({
+        where: { id: parseInt(id) }
+      });
+
+      if (!existingProject) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      await prisma.project.delete({
+        where: { id: parseInt(id) }
+      });
+
+      return res.status(200).json({ message: 'Project deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      return res.status(500).json({ error: 'Failed to delete project' });
+    }
+  }
+}

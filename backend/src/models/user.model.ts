@@ -28,3 +28,38 @@ const userSchema = new Schema({
 const User = model('User', userSchema);
 
 export default User;
+
+export interface UserDTO {
+    id?: number;
+    username: string;
+    email: string;
+    password: string;
+    isAdmin?: boolean;
+    firstName?: string;
+    lastName?: string;
+    profileImage?: string;
+    lastLogin?: Date;
+}
+
+export interface UserResponse {
+    id: number;
+    username: string;
+    email: string;
+    isAdmin: boolean;
+    firstName?: string;
+    lastName?: string;
+    profileImage?: string;
+    lastLogin?: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface LoginRequest {
+    username: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    user: UserResponse;
+    token: string;
+}

@@ -1,36 +1,20 @@
 import React, { useState } from 'react';
-import { AnimatedCards } from '../components/features/AnimatedCards';
-
-const projectData = [
-  {
-    id: '1',
-    title: 'E-Commerce Platform',
-    description: 'Eine moderne E-Commerce-Plattform mit React, Node.js und MongoDB',
-    image: 'https://via.placeholder.com/350x200?text=E-Commerce',
-    tags: ['React', 'Node.js', 'MongoDB', 'Redux']
-  },
-  {
-    id: '2',
-    title: 'Social Media Dashboard',
-    description: 'Ein Social Media Analytics Dashboard mit Echtzeit-Updates',
-    image: 'https://via.placeholder.com/350x200?text=Dashboard',
-    tags: ['React', 'D3.js', 'Firebase', 'Material UI']
-  },
-  {
-    id: '3',
-    title: 'Portfolio Website',
-    description: 'Ein interaktives Portfolio mit 3D-Elementen und Animationen',
-    image: 'https://via.placeholder.com/350x200?text=Portfolio',
-    tags: ['React', 'Three.js', 'Framer Motion', 'Tailwind CSS']
-  }
-];
+import { useProjects } from '../hooks/useProjects';
+import { Project } from '../services/api';
 
 export const Projects: React.FC = () => {
+  const { projects, loading, error, createProject } = useProjects();
   const [filter, setFilter] = useState<string>('all');
   
+  if (loading) return <div className="loading">Projekte werden geladen...</div>;
+  if (error) return <div className="error">{error}</div>;
+  
   const filteredProjects = filter === 'all' 
-    ? projectData 
-    : projectData.filter(project => project.tags.includes(filter));
+    ? projects 
+    : projects.filter(project => project.tags.includes(filter));
+  
+  // Alle verfügbaren Tags aus den Projekten extrahieren
+  const allTags = [...new Set(projects.flatMap(project => project.tags))];
   
   return (
     <div className="projects-page">
@@ -44,26 +28,61 @@ export const Projects: React.FC = () => {
           >
             Alle
           </button>
-          <button 
-            className={`filter-btn ${filter === 'React' ? 'active' : ''}`}
-            onClick={() => setFilter('React')}
-          >
-            React
-          </button>
-          <button 
-            className={`filter-btn ${filter === 'Node.js' ? 'active' : ''}`}
-            onClick={() => setFilter('Node.js')}
-          >
-            Node.js
-          </button>
+          {allTags.map(tag => (
+            <button 
+              key={tag}
+              className={`filter-btn ${filter === tag ? 'active' : ''}`}
+              onClick={() => setFilter(tag)}
+            >
+              {tag}
+            </button>
+          ))}
         </div>
         
-        <AnimatedCards cards={filteredProjects.map(p => ({
-          id: p.id,
-          title: p.title,
-          description: p.description,
-          image: p.image
-        }))} />
+        <div className="projects-grid">
+          {filteredProjects.map(project => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface ProjectCardProps {
+  project: Project;
+}
+
+const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  return (
+    <div className="project-card">
+      {project.imageUrl && (
+        <div className="project-image">
+          <img src={project.imageUrl} alt={project.title} />
+        </div>
+      )}
+      <div className="project-content">
+        <h3>{project.title}</h3>
+        <p>{project.description}</p>
+        
+        <div className="project-tags">
+          {project.tags.map(tag => (
+            <span key={tag} className="project-tag">{tag}</span>
+          ))}
+        </div>
+        
+        <div className="project-links">
+          {project.demoUrl && (
+            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="project-link">
+              Live Demo
+            </a>
+          )}
+          {project.githubUrl && (
+            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-link">
+              GitHub
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
