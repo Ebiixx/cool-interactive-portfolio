@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './AdminLayout.css';
 
 interface AdminLayoutProps {
@@ -7,8 +7,8 @@ interface AdminLayoutProps {
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-   const history = useHistory();
-  const location = useLocation(); // Prüfe, dass dies nicht undefined ist
+   const navigate = useNavigate();
+  const location = useLocation();
   const [activeSection, setActiveSection] = useState('dashboard');
   
   useEffect(() => {
@@ -37,10 +37,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   
   // Fallback, wenn location undefined ist
   const navigateTo = (section: string) => {
-    if (history) {
-      history.push(`/admin?section=${section}`);
+    if (navigate) {
+      navigate(`/admin?section=${section}`);
     } else {
-      console.error("History ist undefined - Router-Kontext fehlt möglicherweise");
+      console.error("Navigate ist undefined - Router-Kontext fehlt möglicherweise");
     }
   };
   
@@ -49,7 +49,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
           <h2>Admin Panel</h2>
-          <button className="close-sidebar-button" onClick={() => history.push('/')}>
+          <button className="close-sidebar-button" onClick={() => navigate('/')}>
             &larr;
           </button>
         </div>
@@ -104,7 +104,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <div className="admin-header-actions">
             <button className="logout-button" onClick={() => {
               // Logout-Logik hier
-              history.push('/');
+              navigate('/');
             }}>Logout</button>
           </div>
         </header>

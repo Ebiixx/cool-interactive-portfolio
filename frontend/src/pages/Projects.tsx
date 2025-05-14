@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useProjects } from '../hooks/useProjects';
 import { Project } from '../services/api';
+import './Projects.css'; // Stellen Sie sicher, dass die CSS-Datei erstellt wird
 
 export const Projects: React.FC = () => {
   const { projects, loading, error, createProject } = useProjects();
@@ -73,12 +74,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         
         <div className="project-links">
           {project.demoUrl && (
-            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="project-link">
+            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="project-link project-link-demo">
               Live Demo
             </a>
           )}
           {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-link">
+            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-link project-link-github">
               GitHub
             </a>
           )}

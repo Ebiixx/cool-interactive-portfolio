@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { Home } from './pages/Home';
@@ -43,21 +43,21 @@ function AppContent() {
     );
   }
   
-  // Wenn wir auf der Login-Seite sind
+  // If we're on the login page
   if (showLoginPage) {
-    // Wenn bereits authentifiziert, leite zum Admin-Bereich weiter
+    // If already authenticated, redirect to admin area
     if (isAuthenticated && isAdmin) {
       window.location.href = '/admin';
       return <div>Weiterleitung...</div>;
     }
-    // Ansonsten zeige Login-Seite
+    // Otherwise show login page
     return <Login onLoginSuccess={token => {
       login(token);
       window.location.href = '/admin';
     }} />;
   }
   
-  // Standard: Zeige normale Portfolio-Seite
+  // Standard: Show normal portfolio page
   return (
     <div className="app">
       <Header />

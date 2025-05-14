@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext'; 
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
 
 export const AdminDashboard: React.FC = () => {
   const { token } = useAuth(); 
   const [unreadMessages, setUnreadMessages] = useState(0);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const fetchUnreadCount = async () => {
     try {
@@ -40,7 +40,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Navigieren zu entsprechenden Seiten beim Klick auf die Karten
   const navigateToSection = (section: string) => {
-    history.push(`/admin?section=${section}`);
+    navigate(`/admin?section=${section}`);
   };
 
   return (
