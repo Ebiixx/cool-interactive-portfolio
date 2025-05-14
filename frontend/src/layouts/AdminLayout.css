@@ -54,13 +54,23 @@
 }
 
 .admin-nav li:hover {
-  background-color: #4a5568;
-  color: white;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.01
+  ); /* Reduced opacity from whatever value you had */
+  cursor: pointer;
 }
 
 /* Aktiver Menüpunkt */
 .admin-nav li.active {
-  background-color: #4c51bf;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.25
+  ); /* Slightly more opaque for active items */
   color: white;
   font-weight: 500;
 }

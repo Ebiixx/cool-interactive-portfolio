@@ -96,6 +96,36 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Add back the activity history section */}
+      <div className="dashboard-recent">
+        <h2>Letzte Aktivitäten</h2>
+        <div className="activity-list">
+          <div className="activity-item">
+            <div>
+              <div className="activity-title">Neues Projekt hinzugefügt</div>
+              <div className="activity-desc">E-Commerce Platform</div>
+            </div>
+            <div className="activity-time">Vor 2 Stunden</div>
+          </div>
+          
+          <div className="activity-item">
+            <div>
+              <div className="activity-title">Nachricht erhalten</div>
+              <div className="activity-desc">Anfrage für Zusammenarbeit</div>
+            </div>
+            <div className="activity-time">Gestern</div>
+          </div>
+          
+          <div className="activity-item">
+            <div>
+              <div className="activity-title">Skill aktualisiert</div>
+              <div className="activity-desc">React auf 90% gesetzt</div>
+            </div>
+            <div className="activity-time">Vor 3 Tagen</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

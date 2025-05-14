@@ -63,8 +63,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0;
+  opacity: 0; /* Start completely transparent */
   transition: opacity 0.3s ease;
+  pointer-events: none; /* Ensures the card remains clickable */
 }
 
 .card-overlay span {
@@ -73,7 +74,7 @@
 }
 
 .stat-card:hover .card-overlay {
-  opacity: 1;
+  opacity: 0.6; /* Full visibility on hover */
 }
 
 /* Farbanpassungen für verschiedene Karten */
