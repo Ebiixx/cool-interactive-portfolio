@@ -1,44 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext'; 
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
 
 export const AdminDashboard: React.FC = () => {
-  const { token } = useAuth(); 
-  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
   const navigate = useNavigate();
 
   const fetchUnreadCount = async () => {
     try {
-      if (!token) {
-        console.error('Kein Authentifizierungstoken vorhanden');
-        return;
-      }
+      setLoading(true);
+      setError(null);
       
       const response = await fetch('http://localhost:5000/api/messages/unread', {
+        method: 'GET',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (!response.ok) {
         throw new Error('Fehler beim Laden der Nachrichtenzahl');
       }
-      
+
       const data = await response.json();
-      setUnreadMessages(data.count);
+      setUnreadCount(data.count);
     } catch (err) {
       console.error('Error fetching unread count:', err);
+      setError(err instanceof Error ? err.message : 'Unbekannter Fehler');
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (token) {
-      fetchUnreadCount();
-    }
+    fetchUnreadCount();
+    
+    const interval = setInterval(fetchUnreadCount, 60000);
+    
+    return () => clearInterval(interval);
   }, [token]);
 
-  // Navigieren zu entsprechenden Seiten beim Klick auf die Karten
   const navigateToSection = (section: string) => {
     navigate(`/admin?section=${section}`);
   };
@@ -65,7 +71,7 @@ export const AdminDashboard: React.FC = () => {
           onClick={() => navigateToSection('messages')}
         >
           <h3>Nachrichten</h3>
-          <div className="stat-value">{unreadMessages}</div>
+          <div className="stat-value">{loading ? 'Laden...' : unreadCount}</div>
           <div className="stat-desc">Neue Nachrichten</div>
           <div className="card-overlay">
             <span>Nachrichten anzeigen</span>
@@ -97,7 +103,6 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
       
-      {/* Add back the activity history section */}
       <div className="dashboard-recent">
         <h2>Letzte Aktivitäten</h2>
         <div className="activity-list">

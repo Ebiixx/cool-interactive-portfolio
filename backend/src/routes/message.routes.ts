@@ -1,16 +1,25 @@
 import express from 'express';
 import { MessageController } from '../controllers/message.controller';
-import { isAuthenticated, isAdmin } from '../middleware/auth.middleware';
+import { checkAuth } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-// Öffentliche Route - jeder kann Nachrichten senden
-router.post('/', MessageController.createMessage);
+// Überprüfe, ob die Route für ungelesene Nachrichten vorhanden ist
+console.log('MessageController.getUnreadCount:', typeof MessageController.getUnreadCount);
 
-// Admin-Routes - nur für Administratoren
-router.get('/', isAuthenticated, isAdmin, MessageController.getAllMessages);
-router.get('/unread', isAuthenticated, isAdmin, MessageController.getUnreadCount);
-router.put('/:id/read', isAuthenticated, isAdmin, MessageController.markAsRead);
-router.delete('/:id', isAuthenticated, isAdmin, MessageController.deleteMessage);
+// Füge die Route für ungelesene Nachrichten hinzu (falls sie fehlt)
+router.get('/unread', checkAuth, MessageController.getUnreadCount);
+
+// Prüfe, ob die MessageController-Methoden definiert sind
+console.log('MessageController methods:', Object.getOwnPropertyNames(MessageController));
+console.log('getAllMessages method:', typeof MessageController.getAllMessages);
+console.log('getMessageById method:', typeof MessageController.getMessageById);
+
+// Nachrichten-Routen
+router.get('/', checkAuth, MessageController.getAllMessages);
+router.post('/', MessageController.createMessage); // ohne Auth für Kontaktformular
+router.get('/:id', checkAuth, MessageController.getMessageById);
+router.put('/:id/read', checkAuth, MessageController.markAsRead);
+router.delete('/:id', checkAuth, MessageController.deleteMessage);
 
 export default router;

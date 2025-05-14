@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useProjects } from '../../hooks/useProjects';
 import { Project } from '../../services/api';
+import { ImageUploader } from '../../components/ImageUploader';
 import './ProjectsAdmin.css';
 
 export const ProjectsAdmin: React.FC = () => {
@@ -133,13 +134,23 @@ export const ProjectsAdmin: React.FC = () => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="imageUrl">Bild-URL</label>
+              <label htmlFor="imageUrl">Projektbild</label>
+              <ImageUploader 
+                onImageUploaded={(imageUrl) => {
+                  setFormData(prev => ({...prev, imageUrl}));
+                }}
+                currentImageUrl={formData.imageUrl}
+              />
+              <small className="form-hint">
+                Du kannst ein Bild hochladen oder direkt eine URL eingeben:
+              </small>
               <input
                 type="text"
                 id="imageUrl"
                 name="imageUrl"
-                value={formData.imageUrl || ''}
+                value={formData.imageUrl}
                 onChange={handleChange}
+                placeholder="Bild-URL (optional wenn oben hochgeladen)"
               />
             </div>
             

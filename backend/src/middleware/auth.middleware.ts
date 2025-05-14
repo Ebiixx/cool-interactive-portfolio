@@ -1,30 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/auth.utils';
+import jwt from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
   userId?: number;
   isAdmin?: boolean;
 }
 
-export const isAuthenticated = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Unauthorized: No token provided' });
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ error: 'Zugriff verweigert. Kein Token vorhanden.' });
     }
-
-    const token = authHeader.split(' ')[1];
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
-    }
-
-    req.userId = decoded.userId;
-    req.isAdmin = decoded.isAdmin;
-    next();
+    
+    const secret = process.env.JWT_SECRET || 'your-secret-key';
+    
+    jwt.verify(token, secret, (err: any, user: any) => {
+      if (err) {
+        return res.status(403).json({ error: 'Ungültiges oder abgelaufenes Token.' });
+      }
+      
+      (req as any).user = user;
+      next();
+    });
   } catch (error) {
-    return res.status(401).json({ error: 'Unauthorized: Token verification failed' });
+    return res.status(500).json({ error: 'Serverfehler bei der Authentifizierung.' });
   }
 };
 

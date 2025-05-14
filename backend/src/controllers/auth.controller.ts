@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { prisma } from '../services/prisma.service';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { comparePasswords, generateToken, hashPassword } from '../utils/auth.utils';
 import { LoginRequest, UserDTO } from '../models/user.model';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 export class AuthController {
   // Registrierung eines neuen Benutzers
@@ -167,6 +170,39 @@ export class AuthController {
     } catch (error) {
       console.error('Get profile error:', error);
       res.status(500).json({ error: 'Failed to get user profile' });
+    }
+  }
+
+  // Profil-Methode hinzufügen
+  static async profile(req: AuthRequest, res: Response) {
+    try {
+      // Benutzer aus req.user holen, der in checkAuth gesetzt wurde
+      const userData = (req as any).user;
+      
+      if (!userData || !userData.id) {
+        return res.status(401).json({ error: 'Nicht authentifiziert' });
+      }
+
+      // Benutzer aus der Datenbank holen
+      const user = await prisma.user.findUnique({
+        where: { id: userData.id },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          isAdmin: true,
+          // Passwort-Hash niemals zurückgeben!
+        }
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: 'Benutzer nicht gefunden' });
+      }
+
+      return res.status(200).json(user);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      return res.status(500).json({ error: 'Interner Serverfehler' });
     }
   }
 }

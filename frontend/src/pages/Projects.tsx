@@ -56,12 +56,17 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
-    <div className="project-card">
-      {project.imageUrl && (
-        <div className="project-image">
-          <img src={project.imageUrl} alt={project.title} />
-        </div>
-      )}
+    <div className={`project-card ${project.featured ? 'featured-project' : ''}`}>
+      <div className="project-image-container">
+        {project.featured && (
+          <div className="featured-badge">Featured</div>
+        )}
+        {project.imageUrl && (
+          <div className="project-image">
+            <img src={project.imageUrl} alt={project.title} />
+          </div>
+        )}
+      </div>
       <div className="project-content">
         <h3>{project.title}</h3>
         <p>{project.description}</p>

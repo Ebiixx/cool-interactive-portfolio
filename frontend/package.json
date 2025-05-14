@@ -12,12 +12,12 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.9.0",
     "or": "^0.2.0",
     "react": "^19.1.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^6.30.0"
+    "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
