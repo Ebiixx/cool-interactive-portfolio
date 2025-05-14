@@ -15,7 +15,7 @@ export class AuthController {
       }
 
       // Überprüfe, ob der Benutzername oder die E-Mail-Adresse bereits existiert
-      const existingUser = await prisma.user.findFirst({
+      const existingUser = await (prisma as any).user.findFirst({
         where: {
           OR: [
             { username },
@@ -31,7 +31,7 @@ export class AuthController {
       // Passwort hashen und Benutzer erstellen
       const hashedPassword = await hashPassword(password);
 
-      const newUser = await prisma.user.create({
+      const newUser = await (prisma as any).user.create({
         data: {
           username,
           email,
@@ -61,7 +61,7 @@ export class AuthController {
       }
 
       // Benutzer finden
-      const user = await prisma.user.findUnique({
+      const user = await (prisma as any).user.findUnique({
         where: { username }
       });
 
@@ -76,7 +76,7 @@ export class AuthController {
       }
 
       // Aktualisiere den letzten Login-Zeitpunkt
-      await prisma.user.update({
+      await (prisma as any).user.update({
         where: { id: user.id },
         data: { lastLogin: new Date() }
       });
@@ -112,7 +112,7 @@ export class AuthController {
       }
 
       // Überprüfe, ob der Benutzername oder die E-Mail-Adresse bereits existiert
-      const existingUser = await prisma.user.findFirst({
+      const existingUser = await (prisma as any).user.findFirst({
         where: {
           OR: [
             { username },
@@ -128,7 +128,7 @@ export class AuthController {
       // Passwort hashen und Admin-Benutzer erstellen
       const hashedPassword = await hashPassword(password);
 
-      const newAdmin = await prisma.user.create({
+      const newAdmin = await (prisma as any).user.create({
         data: {
           username,
           email,
@@ -153,7 +153,7 @@ export class AuthController {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const user = await prisma.user.findUnique({
+      const user = await (prisma as any).user.findUnique({
         where: { id: req.userId }
       });
 

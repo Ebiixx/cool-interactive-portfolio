@@ -1,7 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext'; // Auth-Context importieren
 import './AdminDashboard.css';
 
 export const AdminDashboard: React.FC = () => {
+  const { token } = useAuth(); // Token aus dem Auth-Context holen
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  const fetchUnreadCount = async () => {
+    try {
+      // Prüfen, ob ein Token vorhanden ist
+      if (!token) {
+        console.error('Kein Authentifizierungstoken vorhanden');
+        return;
+      }
+      
+      const response = await fetch('http://localhost:5000/api/messages/unread', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Fehler beim Laden der Nachrichtenzahl');
+      }
+      
+      const data = await response.json();
+      setUnreadMessages(data.count);
+    } catch (err) {
+      console.error('Error fetching unread count:', err);
+    }
+  };
+
+  // useEffect mit token-Abhängigkeit
+  useEffect(() => {
+    if (token) {
+      fetchUnreadCount();
+    }
+  }, [token]);
+
   return (
     <div className="admin-dashboard">
       <h1 className="dashboard-title">Dashboard</h1>
@@ -15,7 +51,7 @@ export const AdminDashboard: React.FC = () => {
         
         <div className="stat-card">
           <h3>Nachrichten</h3>
-          <div className="stat-value">8</div>
+          <div className="stat-value">{unreadMessages}</div>
           <div className="stat-desc">Neue Nachrichten</div>
         </div>
         

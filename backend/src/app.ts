@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
 import projectsRoutes from './routes/projects.routes';
+import messageRoutes from './routes/message.routes';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 // API Routen
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectsRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Grundlegende Testroute
 app.get('/', (req, res) => {

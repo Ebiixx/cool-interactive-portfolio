@@ -8,7 +8,7 @@ async function main() {
     const adminPassword = await hashPassword('admin123');
     
     // Überprüfen, ob bereits ein Admin-Benutzer existiert
-    const existingAdmin = await prisma.user.findFirst({
+    const existingAdmin = await (prisma as any).user.findFirst({
       where: {
         isAdmin: true
       }
@@ -20,7 +20,7 @@ async function main() {
     }
 
     // Admin-Benutzer erstellen
-    const admin = await prisma.user.create({
+    const admin = await (prisma as any).user.create({
       data: {
         username: 'admin',
         email: 'admin@example.com',

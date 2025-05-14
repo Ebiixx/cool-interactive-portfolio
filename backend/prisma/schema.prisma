@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -28,7 +29,7 @@ model User {
   id            Int      @id @default(autoincrement())
   username      String   @unique
   email         String   @unique
-  password      String   // Gehashtes Passwort
+  password      String
   isAdmin       Boolean  @default(false)
   firstName     String?
   lastName      String?
@@ -36,4 +37,15 @@ model User {
   lastLogin     DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
