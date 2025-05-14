@@ -220,6 +220,8 @@ npm start
 
 - Theme customization (dark/light)
 
+- Multi Language Support
+
 - ...
 
 ## 📄 License
