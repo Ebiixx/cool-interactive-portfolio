@@ -210,31 +210,39 @@ npm start
 
 ```
 
-
 ## 📸 App Preview
 
 ### Home
+
 ![Home](docs/screenshots/home.png)
 
 ### About
+
 ![About](docs/screenshots/about.png)
 
 ### Projects
+
 ![Projects](docs/screenshots/projects.png)
 
 ### Skills
+
 ![Skills](docs/screenshots/skills.png)
 
 ### Contact
+
 ![Contact](docs/screenshots/contact.png)
 
 ### Admin Dashboard
+
 ![Admin Dashboard](docs/screenshots/admin-dashboard.png)
 
 ### Admin Projects
+
 ![Admin Projects](docs/screenshots/admin-projects.png)
+![Admin Projects](docs/screenshots/admin-change-project.png)
 
 ### Admin Messages
+
 ![Admin Messages](docs/screenshots/admin-messages.png)
 
 ## 🔮 Future Enhancements
