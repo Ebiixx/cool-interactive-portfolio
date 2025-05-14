@@ -214,15 +214,13 @@ npm start
 
 - Advanced project filtering/sorting
 
-- Admin user management
-
 - Skill matrix with proficiency levels
 
 - Integrated blog engine
 
 - Theme customization (dark/light)
 
-- Admin analytics dashboard
+- ...
 
 ## 📄 License
 
