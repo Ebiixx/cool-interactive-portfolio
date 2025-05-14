@@ -1,44 +1,96 @@
 .admin-dashboard {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1.5rem;
 }
 
 .dashboard-title {
+  font-size: 2rem;
   margin-bottom: 2rem;
-  color: #1e293b;
+  color: #2d3748;
 }
 
 .dashboard-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2.5rem;
 }
 
 .stat-card {
   background-color: white;
+  border-radius: 8px;
   padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .stat-card h3 {
-  margin: 0;
   font-size: 1rem;
-  color: #64748b;
-  margin-bottom: 1rem;
+  color: #718096;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
 }
 
 .stat-value {
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: #4f46e5;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
+  color: #4a5568;
 }
 
 .stat-desc {
-  color: #64748b;
   font-size: 0.875rem;
+  color: #a0aec0;
+}
+
+/* Overlay-Effekt für Karten */
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(79, 70, 229, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-overlay span {
+  color: white;
+  font-weight: 600;
+}
+
+.stat-card:hover .card-overlay {
+  opacity: 1;
+}
+
+/* Farbanpassungen für verschiedene Karten */
+.stat-card:nth-child(1) .card-overlay {
+  background-color: rgba(66, 153, 225, 0.9); /* Blau */
+}
+
+.stat-card:nth-child(2) .card-overlay {
+  background-color: rgba(72, 187, 120, 0.9); /* Grün */
+}
+
+.stat-card:nth-child(3) .card-overlay {
+  background-color: rgba(237, 137, 54, 0.9); /* Orange */
+}
+
+.stat-card:nth-child(4) .card-overlay {
+  background-color: rgba(154, 73, 245, 0.9); /* Lila */
 }
 
 .dashboard-quick-actions,

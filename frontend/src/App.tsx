@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { Home } from './pages/Home';
@@ -8,7 +9,7 @@ import { Skills } from './pages/Skills';
 import { Contact } from './pages/Contact';
 import { Admin } from './pages/Admin/Admin';
 import { Login } from './pages/Admin/Login';
-import { AdminLayout } from './layouts/AdminLayout'; // Stelle sicher, dass der richtige Pfad verwendet wird
+import { AdminLayout } from './layouts/AdminLayout';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './styles/App.css';
 
@@ -34,9 +35,11 @@ function AppContent() {
     }
     // Hier das AdminLayout verwenden und Admin-Komponente als Kind übergeben
     return (
-      <AdminLayout>
-        <Admin />
-      </AdminLayout>
+      <Router>
+        <AdminLayout>
+          <Admin />
+        </AdminLayout>
+      </Router>
     );
   }
   

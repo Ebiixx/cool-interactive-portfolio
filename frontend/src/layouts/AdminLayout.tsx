@@ -1,70 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import './AdminLayout.css';
 
-type AdminLayoutProps = {
+interface AdminLayoutProps {
   children: React.ReactNode;
-};
+}
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+   const history = useHistory();
+  const location = useLocation(); // Prüfe, dass dies nicht undefined ist
+  const [activeSection, setActiveSection] = useState('dashboard');
+  
+  useEffect(() => {
+    // Sicherheitscheck hinzufügen
+    if (!location) {
+      console.error("Location ist undefined - Router-Kontext fehlt möglicherweise");
+      return;
+    }
+    
+    // Aktiven Abschnitt aus URL-Parameter oder Pfad ermitteln
+    const urlParams = new URLSearchParams(location.search);
+    const section = urlParams.get('section');
+    
+    if (section) {
+      setActiveSection(section);
+    } else if (location.pathname === '/admin') {
+      setActiveSection('dashboard');
+    } else {
+      // Pfad wie /admin/messages parsen
+      const pathSection = location.pathname.split('/').pop();
+      if (pathSection && pathSection !== 'admin') {
+        setActiveSection(pathSection);
+      }
+    }
+  }, [location]);
+  
+  // Fallback, wenn location undefined ist
+  const navigateTo = (section: string) => {
+    if (history) {
+      history.push(`/admin?section=${section}`);
+    } else {
+      console.error("History ist undefined - Router-Kontext fehlt möglicherweise");
+    }
   };
-
+  
   return (
     <div className="admin-layout">
-      <div className={`admin-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-        <div className="sidebar-header">
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-header">
           <h2>Admin Panel</h2>
-          <button className="sidebar-toggle" onClick={toggleSidebar}>
-            {sidebarOpen ? '←' : '→'}
+          <button className="close-sidebar-button" onClick={() => history.push('/')}>
+            &larr;
           </button>
         </div>
         
-        <nav className="sidebar-nav">
+        <nav className="admin-nav">
           <ul>
-            <li className="sidebar-item active">
-              <a href="/admin">Dashboard</a>
+            <li 
+              className={activeSection === 'dashboard' ? 'active' : ''} 
+              onClick={() => navigateTo('dashboard')}
+            >
+              <span className="nav-icon">📊</span>
+              Dashboard
             </li>
-            <li className="sidebar-item">
-              <a href="/admin?section=projects">Projekte</a>
+            <li 
+              className={activeSection === 'projects' ? 'active' : ''} 
+              onClick={() => navigateTo('projects')}
+            >
+              <span className="nav-icon">📂</span>
+              Projekte
             </li>
-            <li className="sidebar-item">
-              <a href="/admin?section=skills">Skills</a>
+            <li 
+              className={activeSection === 'skills' ? 'active' : ''} 
+              onClick={() => navigateTo('skills')}
+            >
+              <span className="nav-icon">💼</span>
+              Skills
             </li>
-            <li className="sidebar-item">
-              <a href="/admin?section=messages">Nachrichten</a>
+            <li 
+              className={activeSection === 'messages' ? 'active' : ''} 
+              onClick={() => navigateTo('messages')}
+            >
+              <span className="nav-icon">📨</span>
+              Nachrichten
+              {/* Optional: Badge für ungelesene Nachrichten */}
             </li>
-            <li className="sidebar-item">
-              <a href="/admin?section=settings">Einstellungen</a>
+            <li 
+              className={activeSection === 'settings' ? 'active' : ''} 
+              onClick={() => navigateTo('settings')}
+            >
+              <span className="nav-icon">⚙️</span>
+              Einstellungen
             </li>
           </ul>
         </nav>
-        
-        <div className="sidebar-footer">
-          <a href="/" className="back-to-site">Zurück zur Website</a>
-        </div>
-      </div>
+      </aside>
       
-      <div className={`admin-content ${sidebarOpen ? 'with-sidebar' : 'full-width'}`}>
+      <main className="admin-content">
         <header className="admin-header">
-          <div className="header-left">
-            {!sidebarOpen && (
-              <button className="sidebar-toggle-small" onClick={toggleSidebar}>
-                ☰
-              </button>
-            )}
+          <div className="admin-header-title">
+            Admin
           </div>
-          <div className="header-right">
-            <span className="admin-user">Admin</span>
+          <div className="admin-header-actions">
+            <button className="logout-button" onClick={() => {
+              // Logout-Logik hier
+              history.push('/');
+            }}>Logout</button>
           </div>
         </header>
         
-        <main className="admin-main">
+        <div className="admin-main-content">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
