@@ -1,17 +1,35 @@
-\cool-interactive-portfolio\frontend\src\components\layout\Header.css
-  .portfolio-header {
+.portfolio-header {
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
 }
 
 .header-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Verteilt Elemente über die gesamte Breite */
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 2rem;
+}
+
+.left-placeholder {
+  flex: 1; /* Nimmt ein Drittel des Platzes ein */
+}
+
+.center-section {
+  flex: 1; /* Nimmt ein Drittel des Platzes ein */
+  text-align: center;
+}
+
+.right-section {
+  flex: 1; /* Nimmt ein Drittel des Platzes ein */
+  display: flex;
+  justify-content: flex-end;
 }
 
 .portfolio-title {
@@ -19,14 +37,7 @@
   color: var(--primary-color, #4f46e5);
   font-weight: 700;
   margin: 0;
-  /* Zentrieren des Titels im Container */
-  flex-grow: 1;
   text-align: center;
-  padding-right: 25%; /* Ausgleich für die rechts positionierte Navigation */
-}
-
-.header-nav {
-  display: flex;
 }
 
 .header-nav ul {
@@ -48,19 +59,20 @@
   color: var(--primary-color, #4f46e5);
 }
 
+/* Responsives Design */
 @media (max-width: 768px) {
   .header-container {
-    flex-direction: column;
+    grid-template-columns: 1fr; /* Für mobile Ansicht nur eine Spalte */
+    grid-template-rows: auto auto; /* Zwei Zeilen: Titel und Navigation */
     gap: 1rem;
   }
 
-  .portfolio-title {
-    padding-right: 0;
-    text-align: center;
+  .center-section {
+    grid-row: 1; /* Titel oben */
   }
 
-  .header-nav ul {
-    flex-wrap: wrap;
-    justify-content: center;
+  .right-section {
+    grid-row: 2; /* Navigation unten */
+    justify-content: center; /* Navigation mittig ausrichten */
   }
 }
