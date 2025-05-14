@@ -114,6 +114,18 @@ export class ProjectsController {
         ? projectData.tags.join(',') 
         : existingProject.tags;
 
+      // Sicherstellen, dass order eine Zahl ist
+      let orderValue = existingProject.order;
+      if (projectData.order !== undefined) {
+        orderValue = typeof projectData.order === 'string' 
+          ? parseInt(projectData.order) 
+          : projectData.order;
+        // Sicherstellen, dass es eine gültige Zahl ist
+        if (isNaN(orderValue)) {
+          orderValue = existingProject.order;
+        }
+      }
+
       const updatedProject = await prisma.project.update({
         where: { id: parseInt(id) },
         data: {
@@ -124,7 +136,7 @@ export class ProjectsController {
           githubUrl: projectData.githubUrl !== undefined ? projectData.githubUrl : existingProject.githubUrl,
           tags: tagsString,
           featured: projectData.featured !== undefined ? projectData.featured : existingProject.featured,
-          order: projectData.order !== undefined ? projectData.order : existingProject.order
+          order: orderValue
         }
       });
 
