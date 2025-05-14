@@ -1,11 +1,12 @@
 import React from 'react';
+import './Header.css'; // Stelle sicher, dass diese CSS-Datei existiert
 
 export const Header: React.FC = () => {
   return (
     <header className="portfolio-header">
-      <div className="container">
-        <h1>Frontend Showcase</h1>
-        <nav>
+      <div className="container header-container">
+        <h1 className="portfolio-title">Max Mustermann</h1>
+        <nav className="header-nav">
           <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="#about">Über Mich</a></li>
